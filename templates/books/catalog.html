@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="max-w-7xl mx-auto px-4 py-12">
+    <h1 class="text-4xl font-bold mb-8 text-center bg-gradient-to-r from-green-400 to-blue-500 bg-clip-text text-transparent">
+        Book Catalog
+    </h1>
+
+    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        {% for book in books %}
+            <div class="bg-[#1f1f1f] rounded-xl overflow-hidden shadow-lg hover:shadow-electric-purple/30 hover:scale-105 transition duration-300">
+                {% if book.image_url %}
+                    <img src="{{ url_for('static', filename=book.image_url) }}" alt="{{ book.title }}" class="w-full h-64 object-cover">
+                {% else %}
+                    <div class="w-full h-64 bg-gray-800 flex items-center justify-center">
+                        <i class="fas fa-book-open text-5xl text-gray-600"></i>
+                    </div>
+                {% endif %}
+                <div class="p-6">
+                    <h3 class="font-bold text-xl text-neon-blue mb-2">{{ book.title }}</h3>
+                    <p class="text-gray-400 mb-2">by {{ book.author }}</p>
+                    <div class="flex justify-between items-center mb-4">
+                        <span class="text-yellow-400 font-bold">${{ "%.2f"|format(book.price) }}</span>
+                        <span class="text-gray-500">⭐ {{ book.rating }}</span>
+                    </div>
+                    <a href="{{ url_for('book_details', book_id=book.id) }}" 
+                       class="block text-center bg-gradient-to-r from-electric-purple to-neon-blue text-black font-bold py-2 px-4 rounded hover:opacity-90 transition">
+                        View Details
+                    </a>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

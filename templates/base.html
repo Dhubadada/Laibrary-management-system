@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Trust Library - Your trusted book store and reading platform">
+  <title>{% block title %}Trust Library{% endblock %}</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            'sans': ['Inter', 'sans-serif'],
+          },
+          colors: {
+            'neon-blue': '#00f0ff',
+            'electric-purple': '#cc00ff',
+            'vivid-yellow': '#ffee00',
+            'hot-pink': '#ff00aa',
+            'deep-black': '#0a0a0a',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: white;
+    }
+    .text-outline {
+      text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+    }
+  </style>
+</head>
+<body class="font-sans bg-deep-black text-gray-200">
+  <!-- Flash messages -->
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div class="fixed top-20 right-4 z-50 space-y-2">
+        {% for category, message in messages %}
+          <div class="px-6 py-3 rounded-md shadow-lg text-white font-bold 
+                      {% if category == 'success' %}bg-green-600{% endif %}
+                      {% if category == 'danger' %}bg-red-600{% endif %}
+                      {% if category == 'info' %}bg-blue-600{% endif %}">
+            {{ message }}
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+
+  <!-- Header -->
+  <header class="bg-black shadow-lg sticky top-0 z-50 border-b-2 border-electric-purple">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16">
+        <div class="flex items-center">
+          <div class="flex-shrink-0 flex items-center">
+            <i class="fas fa-book-open text-library-gold text-2xl mr-2"></i>
+            <a href="{{ url_for('index') }}" class="text-xl font-bold bg-gradient-to-r from-neon-blue to-electric-purple bg-clip-text text-transparent">Trust Library</a>
+          </div>
+        </div>
+
+        <!-- Desktop Navigation -->
+        <nav class="hidden md:flex space-x-8">
+          <a href="{{ url_for('index') }}" class="text-neon-blue hover:text-vivid-yellow px-3 py-2 text-sm font-bold transition transform hover:scale-105">Home</a>
+          <a href="{{ url_for('about') }}" class="text-hot-pink hover:text-vivid-yellow px-3 py-2 text-sm font-bold transition transform hover:scale-105">About</a>
+          <a href="{{ url_for('book_catalog') }}" class="text-electric-purple hover:text-vivid-yellow px-3 py-2 text-sm font-bold transition transform hover:scale-105">Books</a>
+          {% if 'user_id' in session %}
+            {% if session['is_admin'] %}
+              <a href="{{ url_for('admin_dashboard') }}" class="text-vivid-yellow hover:text-neon-blue px-3 py-2 text-sm font-bold transition transform hover:scale-105">Admin Panel</a>
+            {% else %}
+              <a href="{{ url_for('user_dashboard') }}" class="text-electric-purple hover:text-vivid-yellow px-3 py-2 text-sm font-bold transition transform hover:scale-105">My Account</a>
+            {% endif %}
+          {% endif %}
+        </nav>
+
+        <div class="hidden md:flex items-center space-x-4">
+          {% if 'user_id' in session %}
+            <a href="{{ url_for('logout') }}" class="text-electric-purple hover:text-vivid-yellow px-3 py-2 text-sm font-bold transition transform hover:scale-105">Logout</a>
+          {% else %}
+            <a href="{{ url_for('login') }}" class="text-electric-purple hover:text-vivid-yellow px-3 py-2 text-sm font-bold transition transform hover:scale-105">Login</a>
+            <a href="{{ url_for('register') }}" class="bg-gradient-to-r from-hot-pink to-electric-purple text-black px-4 py-2 rounded-md text-sm font-bold hover:from-electric-purple hover:to-neon-blue transition transform hover:scale-105 shadow-lg shadow-electric-purple/50">Register</a>
+          {% endif %}
+        </div>
+
+        <!-- Mobile menu button -->
+        <div class="md:hidden flex items-center">
+          <button type="button" class="inline-flex items-center justify-center p-2 rounded-md text-vivid-yellow focus:outline-none">
+            <i class="fas fa-bars"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="bg-[#2B0A0A] text-white pt-16 pb-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-10 mb-12">
+        <!-- Column 1: Logo & About -->
+        <div>
+          <h3 class="text-2xl font-bold text-red-300 mb-4">Trust Library</h3>
+          <p class="text-sm text-gray-300 mb-4">Your gateway to knowledge, discovery, and community.</p>
+          <div class="flex space-x-4">
+            <a href="#" class="text-gray-400 hover:text-red-400 transition"><i class="fab fa-facebook-f"></i></a>
+            <a href="#" class="text-gray-400 hover:text-red-400 transition"><i class="fab fa-twitter"></i></a>
+            <a href="#" class="text-gray-400 hover:text-red-400 transition"><i class="fab fa-instagram"></i></a>
+            <a href="#" class="text-gray-400 hover:text-red-400 transition"><i class="fab fa-youtube"></i></a>
+          </div>
+        </div>
+
+        <!-- Column 2: Quick Links -->
+        <div>
+          <h3 class="text-lg font-bold text-red-300 mb-4">Quick Links</h3>
+          <ul class="space-y-2 text-sm">
+            <li><a href="{{ url_for('book_catalog') }}" class="text-gray-300 hover:text-white transition">Book Catalog</a></li>
+            <li><a href="{{ url_for('about') }}" class="text-gray-300 hover:text-white transition">About Us</a></li>
+            <li><a href="#" class="text-gray-300 hover:text-white transition">Library Hours</a></li>
+          </ul>
+        </div>
+
+        <!-- Column 3: Resources -->
+        <div>
+          <h3 class="text-lg font-bold text-red-300 mb-4">Resources</h3>
+          <ul class="space-y-2 text-sm">
+            <li><a href="#" class="text-gray-300 hover:text-white transition">E-books</a></li>
+            <li><a href="#" class="text-gray-300 hover:text-white transition">Audiobooks</a></li>
+            <li><a href="#" class="text-gray-300 hover:text-white transition">Research</a></li>
+          </ul>
+        </div>
+
+        <!-- Column 4: Contact -->
+        <div>
+          <h3 class="text-lg font-bold text-red-300 mb-4">Contact Us</h3>
+          <address class="not-italic text-sm text-gray-300 space-y-2">
+            <p><i class="fas fa-map-marker-alt text-red-400 mr-2"></i>123 Knowledge Lane</p>
+            <p><i class="fas fa-phone-alt text-red-400 mr-2"></i>+1 (555) 123-4567</p>
+            <p><i class="fas fa-envelope text-red-400 mr-2"></i>info@trustlibrary.org</p>
+          </address>
+        </div>
+      </div>
+
+      <!-- Bottom Bar -->
+      <div class="border-t border-red-800 pt-6 flex flex-col md:flex-row justify-between items-center">
+        <p class="text-gray-400 text-sm mb-4 md:mb-0">© 2023 Trust Library. All rights reserved.</p>
+        <div class="flex space-x-6 text-sm">
+          <a href="#" class="text-gray-400 hover:text-white transition">Privacy Policy</a>
+          <a href="#" class="text-gray-400 hover:text-white transition">Terms of Use</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

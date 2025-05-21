@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 py-8">
+    <h1 class="text-3xl font-bold mb-8 text-center bg-gradient-to-r from-neon-blue to-electric-purple bg-clip-text text-transparent">
+        Admin Dashboard
+    </h1>
+
+    <!-- Pending Approvals -->
+    <div class="mb-12">
+        <h2 class="text-2xl font-bold mb-4 text-vivid-yellow">Pending User Approvals</h2>
+        {% if pending_users %}
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {% for user in pending_users %}
+                    <div class="bg-[#1f1f1f] p-4 rounded-lg border border-electric-purple">
+                        <h3 class="text-lg font-bold text-neon-blue">{{ user.username }}</h3>
+                        <p class="text-gray-400">{{ user.email }}</p>
+                        <p class="text-sm text-gray-500">Joined: {{ user.date_joined.strftime('%Y-%m-%d') }}</p>
+                        <a href="{{ url_for('approve_user', user_id=user.id) }}" 
+                           class="mt-2 inline-block bg-green-600 text-white px-3 py-1 rounded text-sm hover:bg-green-700 transition">
+                            Approve
+                        </a>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="text-gray-400">No pending approvals</p>
+        {% endif %}
+    </div>
+
+    <!-- Add New Book -->
+    <div class="mb-12">
+        <h2 class="text-2xl font-bold mb-4 text-vivid-yellow">Add New Book</h2>
+        <a href="{{ url_for('add_book') }}" 
+           class="bg-gradient-to-r from-hot-pink to-electric-purple text-black px-4 py-2 rounded font-bold hover:opacity-90 transition">
+            Add Book
+        </a>
+    </div>
+
+    <!-- Books List -->
+    <div class="mb-12">
+        <h2 class="text-2xl font-bold mb-4 text-vivid-yellow">All Books</h2>
+        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for book in books %}
+                <div class="bg-[#1f1f1f] rounded-lg overflow-hidden shadow-lg hover:shadow-electric-purple/30 transition">
+                    {% if book.image_url %}
+                        <img src="{{ url_for('static', filename=book.image_url) }}" alt="{{ book.title }}" class="w-full h-48 object-cover">
+                    {% else %}
+                        <div class="w-full h-48 bg-gray-800 flex items-center justify-center">
+                            <i class="fas fa-book text-4xl text-gray-600"></i>
+                        </div>
+                    {% endif %}
+                    <div class="p-4">
+                        <h3 class="font-bold text-lg text-neon-blue">{{ book.title }}</h3>
+                        <p class="text-gray-400">{{ book.author }}</p>
+                        <div class="flex justify-between items-center mt-2">
+                            <span class="text-yellow-400">${{ "%.2f"|format(book.price) }}</span>
+                            <span class="text-gray-500">Rating: {{ book.rating }}/5</span>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
